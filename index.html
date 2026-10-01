@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Flex Academy</title>
+  <meta name="description" content="Flex Academy brings the systems behind The Flex into a 12-week programme for short-term rental operators.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,300;9..144,400&display=swap" rel="stylesheet">
+  <link rel="preload" as="image" href="assets/hero-poster.jpg">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="nav" id="nav">
+    <a class="logo" href="#" aria-label="Flex Academy home">
+      <span class="logo__flex">flex.</span><span class="logo__academy">Academy</span>
+    </a>
+    <nav class="nav__links" aria-label="Primary">
+      <a href="#">About</a>
+      <a href="#">Program</a>
+      <a href="#">Services</a>
+      <a href="#">Pricing</a>
+    </nav>
+    <div class="nav__actions">
+      <a class="nav__account" href="#" aria-label="Account">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+          <circle cx="10" cy="10" r="8.4" stroke="currentColor" stroke-width="1.2"/>
+          <circle cx="10" cy="8" r="2.8" stroke="currentColor" stroke-width="1.2"/>
+          <path d="M4.6 15.6c1.2-2 3.1-3 5.4-3s4.2 1 5.4 3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+        </svg>
+      </a>
+      <a class="btn btn--solid" href="#">Book a free strategy call</a>
+    </div>
+  </header>
+
+  <main>
+    <!-- One tall scroll track. Its sticky child holds both "sections" so the
+         background video can travel from the hero into a card in section two. -->
+    <section class="stage" id="stage">
+      <div class="stage__sticky">
+
+        <!-- Section 2: the problems. A 1440x1024 artboard (Figma frame 344:317), scaled to fit. -->
+        <div class="problems" id="problems" aria-label="The challenges of growing a portfolio">
+          <div class="artboard" id="artboard">
+            <article class="card" style="--x: 209px; --y: 114px" data-drift="-1">
+              <img class="card__thumb" src="assets/cards/pricing.jpg" alt="">
+              <div class="card__body"><h3>Pricing</h3><p>Every new property adds another decision.</p></div>
+            </article>
+            <article class="card" style="--x: 1310px; --y: 114px" data-drift="-1" aria-hidden="true">
+              <img class="card__thumb" src="assets/cards/pricing-2.jpg" alt="">
+              <div class="card__body"><h3>Pricing</h3><p>Every new property adds another decision.</p></div>
+            </article>
+            <article class="card" style="--x: -344px; --y: 234px" data-drift="1" aria-hidden="true">
+              <img class="card__thumb" src="assets/cards/margins.jpg" alt="">
+              <div class="card__body"><h3>Margins</h3><p>More units don’t always mean more margin.</p></div>
+            </article>
+            <article class="card" style="--x: 757px; --y: 234px" data-drift="1">
+              <img class="card__thumb" src="assets/cards/margins.jpg" alt="">
+              <div class="card__body"><h3>Margins</h3><p>More units don’t always mean more margin.</p></div>
+            </article>
+            <div class="statement">
+              <p>What begins as hosting quickly becomes something else. More guests to answer. More pricing to manage. More people and moving parts to coordinate.</p>
+              <p>The portfolio grows, but so does everything behind it.</p>
+            </div>
+            <article class="card" style="--x: -202.09px; --y: 726px" data-drift="-1" aria-hidden="true">
+              <img class="card__thumb" src="assets/cards/guest-messages.jpg" alt="">
+              <div class="card__body"><h3>Guest messages</h3><p>The inbox never really closes.</p></div>
+            </article>
+            <article class="card" style="--x: 757.09px; --y: 726px" data-drift="-1">
+              <img class="card__thumb" src="assets/cards/guest-messages.jpg" alt="">
+              <div class="card__body"><h3>Guest messages</h3><p>The inbox never really closes.</p></div>
+            </article>
+            <article class="card card--target" style="--x: 231.91px; --y: 846px" data-drift="1">
+              <div class="card__thumb card__thumb--slot" id="videoSlot"></div>
+              <div class="card__body"><h3>Operations</h3><p>Every property adds more moving parts.</p></div>
+            </article>
+            <article class="card" style="--x: 1191.09px; --y: 846px" data-drift="1" aria-hidden="true">
+              <img class="card__thumb" src="assets/cards/operations.jpg" alt="">
+              <div class="card__body"><h3>Operations</h3><p>Every property adds more moving parts.</p></div>
+            </article>
+          </div>
+        </div>
+
+        <!-- The background video. Full-bleed at the top, shrinks into #videoSlot on scroll -->
+        <div class="media" id="media">
+          <video id="heroVideo" src="assets/hero.mp4" poster="assets/hero-poster.jpg"
+                 autoplay muted loop playsinline preload="auto" aria-hidden="true"></video>
+        </div>
+
+        <!-- Section 1: hero copy (on top of the video) -->
+        <div class="hero" id="hero">
+          <p class="hero__eyebrow">
+            <span>FROM THE TEAM BEHIND</span>
+            <span class="theflex" aria-label="the flex.">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M2.5 22V10.5L12 2.5l9.5 8V22" stroke="currentColor" stroke-width="1.1" stroke-linejoin="round"/>
+                <path d="M9 22v-9.2c0-1.9 1-2.9 2.6-2.9 .8 0 1.4.2 1.9.6M7.6 14.6h4.6" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/>
+              </svg>
+              <span class="theflex__word">the flex.</span>
+            </span>
+          </p>
+          <h1 class="hero__title">The next phase is<br>built differently</h1>
+          <p class="hero__lede">
+            Flex Academy brings the systems behind The Flex into a 12-week programme for
+            <mark>short-term rental operators</mark>
+            ready to grow with more structure, stronger operations and less reliance on doing everything themselves.
+          </p>
+          <div class="hero__ctas">
+            <a class="btn btn--ghost" href="#">Learn what to automate first</a>
+            <a class="btn btn--solid" href="#">Book a free strategy call</a>
+          </div>
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,289 @@
+:root {
+  --green: #0f4740;
+  --green-ink: #0f4740;
+  --cream: #fffdf5;
+  --card: rgba(83, 113, 255, .1);
+  --highlight: #5371ff;
+  --sans: "Inter Tight", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --serif: "Fraunces", Georgia, "Times New Roman", serif;
+  --gutter: clamp(16px, 2.8vw, 40px);
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body { margin: 0; }
+
+body {
+  background: var(--cream);
+  color: var(--green-ink);
+  font-family: var(--sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+a { color: inherit; text-decoration: none; }
+
+/* ---------- Nav (Figma 344:257) ---------- */
+.nav {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: 48px;
+  padding: 24px var(--gutter);
+  transition: background-color .4s ease;
+}
+.nav.is-solid {
+  background: color-mix(in srgb, var(--cream) 88%, transparent);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.logo { display: inline-flex; align-items: baseline; gap: .28em; color: var(--green); line-height: 1; }
+.logo__flex { font-family: var(--serif); font-weight: 300; font-size: 33px; letter-spacing: -.01em; }
+.logo__academy { font-weight: 600; font-size: 24px; letter-spacing: -.02em; }
+
+.nav__links { display: flex; gap: 24px; font-size: 14px; letter-spacing: .05em; }
+.nav__links a { transition: opacity .2s; }
+.nav__links a:hover { opacity: .6; }
+
+.nav__actions { margin-left: auto; display: flex; align-items: center; gap: 21px; }
+.nav__account { display: inline-grid; place-items: center; color: var(--green); }
+.nav__account svg { width: 24px; height: 24px; }
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 16px;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.55;
+  white-space: nowrap;
+  transition: background-color .2s;
+}
+.btn--solid { background: var(--green); color: var(--cream); border: 1px solid var(--green); }
+.btn--solid:hover { background: #0a332e; }
+.btn--ghost {
+  color: var(--green);
+  border: 1px solid var(--green);
+  background: rgba(255, 253, 245, .1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+.btn--ghost:hover { background: rgba(255, 253, 245, .45); }
+
+/* ---------- Scroll stage ---------- */
+.stage { position: relative; height: 340vh; }
+.stage__sticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100svh;
+  overflow: hidden;
+}
+
+/* The travelling video. JS sets left/top/width/height every frame. */
+.media {
+  position: absolute;
+  z-index: 2;
+  left: 0; top: 0;
+  width: 100%; height: 100%;
+  overflow: hidden;
+  background: #d9d3c6 url("assets/hero-poster.jpg") center / cover no-repeat;
+  will-change: left, top, width, height;
+}
+.media video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* Figma crops the footage ~1.19x past cover; JS eases this back to 1 */
+  transform: scale(var(--zoom, 1.19));
+}
+
+/* ---------- Hero copy (Figma 344:288) ---------- */
+.hero {
+  position: absolute;
+  z-index: 3;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(16px, 3.1vh, 32px);
+  padding: clamp(96px, 17vh, 196px) var(--gutter) 0;
+  text-align: center;
+  color: var(--green);
+  will-change: opacity, filter, transform;
+}
+/* Beige wash over the top of the footage */
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 63%;
+  background: linear-gradient(to bottom, rgba(255, 253, 245, .8), rgba(255, 255, 255, 0));
+  z-index: -1;
+  pointer-events: none;
+}
+
+.hero__eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin: 0;
+  font-size: clamp(14px, 1.4vw, 20px);
+  line-height: 1.55;
+}
+.theflex { display: inline-flex; align-items: flex-end; gap: .4em; padding-bottom: .15em; }
+.theflex svg { width: 1.45em; height: 1.45em; }
+.theflex__word { font-family: var(--serif); font-weight: 400; font-size: 1.15em; letter-spacing: .01em; }
+
+.hero__title {
+  margin: 0;
+  font-weight: 600;
+  font-size: clamp(40px, min(6.1vw, 8.6vh), 88px);
+  line-height: 1.01;
+  letter-spacing: -.02em;
+  text-transform: uppercase;
+}
+
+.hero__lede {
+  max-width: 946px;
+  margin: 0;
+  font-size: clamp(15px, min(1.4vw, 2vh), 20px);
+  line-height: 1.55;
+}
+.hero__lede mark {
+  background: var(--highlight);
+  color: var(--cream);
+  padding: .14em .35em;
+  margin: 0 .15em;
+}
+
+.hero__ctas {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: clamp(12px, 2.2vw, 32px);
+}
+
+/* ---------- Section 2: problems ---------- */
+.problems {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  background: var(--cream);
+  pointer-events: none;
+}
+.problems.is-live { pointer-events: auto; }
+
+/* Figma frame is 1440x1024; JS sets --s so it fits the viewport */
+.artboard {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 1440px;
+  height: 1024px;
+  transform: translate(-50%, -50%) scale(var(--s, 1));
+}
+
+.card {
+  position: absolute;
+  left: var(--x);
+  top: var(--y);
+  display: flex;
+  gap: 16px;
+  will-change: transform, opacity, filter;
+}
+
+.card__thumb {
+  flex: none;
+  display: block;
+  width: 88px;
+  height: 88px;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.card__body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 16px;
+  background: var(--card);
+  border-radius: 4px;
+  white-space: nowrap;
+}
+.card__body h3,
+.card__body p { margin: 0; font-size: 20px; line-height: 1.15; color: var(--green); letter-spacing: -.01em; }
+.card__body h3 { font-weight: 600; }
+.card__body p  { font-weight: 400; }
+
+.statement {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 1144px;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+.statement p {
+  margin: 0;
+  font-size: 32px;
+  font-weight: 600;
+  line-height: 1.55;
+  letter-spacing: -.02em;
+  color: var(--green);
+}
+.statement p + p { margin-top: 1.55em; }
+
+/* ---------- Small screens: drop the artboard, stack the four cards ---------- */
+@media (max-width: 760px) {
+  .nav__links { display: none; }
+  .nav .btn--solid { display: none; }
+  .hero::before { height: 80%; background: linear-gradient(to bottom, rgba(255, 253, 245, .9) 55%, rgba(255, 253, 245, 0)); }
+
+  .artboard {
+    position: absolute;
+    inset: 0;
+    width: auto;
+    height: auto;
+    transform: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 14px;
+    padding: 72px 0 24px;
+  }
+  .card { position: relative; left: auto; top: auto; align-self: flex-start; gap: 8px; }
+  .card[aria-hidden="true"] { display: none; }
+  .card:nth-of-type(1) { margin-left: 6%; }
+  .card:nth-of-type(4) { margin-left: 22%; }
+  .card:nth-of-type(6) { margin-left: 12%; }
+  .card--target { margin-left: 4%; }
+  .card__thumb { width: 52px; height: 52px; }
+  .card__body { padding: 0 12px; }
+  .card__body h3, .card__body p { font-size: 13px; }
+  .statement {
+    position: static;
+    width: auto;
+    transform: none;
+    margin: 18px 0;
+    padding: 0 var(--gutter);
+    order: 0;
+  }
+  .statement p { font-size: 19px; }
+}
+
+/* ---------- Reduced motion: no scroll choreography, plain stacked sections ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .stage { height: auto; }
+  .stage__sticky { position: relative; height: auto; overflow: visible; }
+  .media { position: absolute; height: 100vh; }
+  .hero { position: relative; height: 100vh; }
+  .problems { position: relative; min-height: 100vh; pointer-events: auto; }
+  .card__thumb--slot { background: url("assets/cards/operations.jpg") center / cover; }
+}
