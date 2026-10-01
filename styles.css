@@ -76,7 +76,7 @@ a { color: inherit; text-decoration: none; }
 .btn--ghost:hover { background: rgba(255, 253, 245, .45); }
 
 /* ---------- Scroll stage ---------- */
-.stage { position: relative; height: 340vh; }
+.stage { position: relative; height: 420vh; }
 .stage__sticky {
   position: sticky;
   top: 0;
@@ -100,14 +100,39 @@ a { color: inherit; text-decoration: none; }
   width: 100%;
   height: 100%;
   object-fit: cover;
-  /* Figma crops the footage ~1.19x past cover; JS eases this back to 1 */
+  /* Figma crops the footage ~1.19x past cover; JS re-frames it on the way down */
   transform: scale(var(--zoom, 1.19));
+  transform-origin: 50% var(--origin-y, 50%);
 }
+
+/* ---------- Progressive blur (Figma 344:257/344:258) ----------
+   Stacked backdrop blurs, each masked to a shorter band, so the blur is
+   strongest at the top and melts into the sharp footage. JS fades the
+   layers via --veil (opacity on the parent would cut off the backdrop). */
+.veil {
+  position: absolute;
+  z-index: 3;
+  inset: 0 0 auto 0;
+  height: 66%;
+  pointer-events: none;
+}
+.veil i {
+  position: absolute;
+  inset: 0;
+  opacity: var(--veil, 1);
+}
+.veil i:nth-child(1) { backdrop-filter: blur(1px);  -webkit-backdrop-filter: blur(1px);  mask-image: linear-gradient(to bottom, #000 0%, #000 55%, transparent 100%); -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 55%, transparent 100%); }
+.veil i:nth-child(2) { backdrop-filter: blur(3px);  -webkit-backdrop-filter: blur(3px);  mask-image: linear-gradient(to bottom, #000 0%, #000 42%, transparent 82%);  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 42%, transparent 82%); }
+.veil i:nth-child(3) { backdrop-filter: blur(6px);  -webkit-backdrop-filter: blur(6px);  mask-image: linear-gradient(to bottom, #000 0%, #000 30%, transparent 66%);  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 30%, transparent 66%); }
+.veil i:nth-child(4) { backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); mask-image: linear-gradient(to bottom, #000 0%, #000 18%, transparent 50%);  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 18%, transparent 50%); }
+.veil i:nth-child(5) { backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); mask-image: linear-gradient(to bottom, #000 0%, transparent 34%);              -webkit-mask-image: linear-gradient(to bottom, #000 0%, transparent 34%); }
+/* Beige wash on top of the blur */
+.veil i:nth-child(6) { background: linear-gradient(to bottom, rgba(255, 253, 245, .8), rgba(255, 253, 245, 0)); }
 
 /* ---------- Hero copy (Figma 344:288) ---------- */
 .hero {
   position: absolute;
-  z-index: 3;
+  z-index: 4;
   inset: 0;
   display: flex;
   flex-direction: column;
@@ -118,17 +143,6 @@ a { color: inherit; text-decoration: none; }
   color: var(--green);
   will-change: opacity, filter, transform;
 }
-/* Beige wash over the top of the footage */
-.hero::before {
-  content: "";
-  position: absolute;
-  inset: 0 0 auto 0;
-  height: 63%;
-  background: linear-gradient(to bottom, rgba(255, 253, 245, .8), rgba(255, 255, 255, 0));
-  z-index: -1;
-  pointer-events: none;
-}
-
 .hero__eyebrow {
   display: flex;
   align-items: center;
@@ -240,11 +254,18 @@ a { color: inherit; text-decoration: none; }
 }
 .statement p + p { margin-top: 1.55em; }
 
+/* Words are wrapped by JS and revealed one after another on scroll */
+.statement .w {
+  display: inline-block;
+  will-change: opacity, filter, transform;
+}
+
 /* ---------- Small screens: drop the artboard, stack the four cards ---------- */
 @media (max-width: 760px) {
   .nav__links { display: none; }
   .nav .btn--solid { display: none; }
-  .hero::before { height: 80%; background: linear-gradient(to bottom, rgba(255, 253, 245, .9) 55%, rgba(255, 253, 245, 0)); }
+  .veil { height: 80%; }
+  .veil i:nth-child(6) { background: linear-gradient(to bottom, rgba(255, 253, 245, .85) 50%, rgba(255, 253, 245, 0)); }
 
   .artboard {
     position: absolute;
