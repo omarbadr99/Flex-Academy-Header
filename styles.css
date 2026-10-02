@@ -92,17 +92,20 @@ a { color: inherit; text-decoration: none; }
   left: 0; top: 0;
   width: 100%; height: 100%;
   overflow: hidden;
-  background: #d9d3c6 url("assets/hero-poster.jpg") center / cover no-repeat;
+  background: #e3ddd2;
   will-change: left, top, width, height;
 }
 .media video {
+  /* JS sizes and positions the footage; these are the no-JS defaults */
+  position: absolute;
+  left: 0;
+  top: 0;
   display: block;
   width: 100%;
   height: 100%;
+  max-width: none;
   object-fit: cover;
-  /* Figma crops the footage ~1.19x past cover; JS re-frames it on the way down */
-  transform: scale(var(--zoom, 1.19));
-  transform-origin: 50% var(--origin-y, 50%);
+  object-position: 50% 100%;
 }
 
 /* ---------- Progressive blur (Figma 344:257/344:258) ----------
@@ -138,7 +141,9 @@ a { color: inherit; text-decoration: none; }
   flex-direction: column;
   align-items: center;
   gap: clamp(16px, 3.1vh, 32px);
-  padding: clamp(96px, 17vh, 196px) var(--gutter) 0;
+  /* Figma spacing at 1024px tall, tighter on shorter screens so the copy
+     stays above the people in the footage */
+  padding: clamp(84px, 30vh - 120px, 196px) var(--gutter) 0;
   text-align: center;
   color: var(--green);
   will-change: opacity, filter, transform;
@@ -158,7 +163,7 @@ a { color: inherit; text-decoration: none; }
 .hero__title {
   margin: 0;
   font-weight: 600;
-  font-size: clamp(40px, min(6.1vw, 8.6vh), 88px);
+  font-size: clamp(34px, min(6.1vw, 8.6vh), 88px);
   line-height: 1.01;
   letter-spacing: -.02em;
   text-transform: uppercase;
@@ -254,10 +259,23 @@ a { color: inherit; text-decoration: none; }
 }
 .statement p + p { margin-top: 1.55em; }
 
-/* Words are wrapped by JS and revealed one after another on scroll */
+/* Words are wrapped by JS; when section two comes into view they resolve
+   one after another (a timed transition, staggered by --i) */
 .statement .w {
   display: inline-block;
-  will-change: opacity, filter, transform;
+  opacity: .12;
+  filter: blur(8px);
+  transform: translateY(.25em);
+  transition:
+    opacity .6s ease,
+    filter .7s ease,
+    transform .7s cubic-bezier(.2, .7, .2, 1);
+  transition-delay: calc(var(--i, 0) * 32ms);
+}
+.statement.is-revealed .w {
+  opacity: 1;
+  filter: blur(0);
+  transform: none;
 }
 
 /* ---------- Small screens: drop the artboard, stack the four cards ---------- */
@@ -265,6 +283,10 @@ a { color: inherit; text-decoration: none; }
   .nav__links { display: none; }
   .nav .btn--solid { display: none; }
   .veil { height: 80%; }
+  .hero { gap: 14px; }
+  .hero__lede { font-size: 14px; }
+  .hero__ctas { gap: 10px; }
+  .hero__ctas .btn { padding: 9px 12px; font-size: 13px; }
   .veil i:nth-child(6) { background: linear-gradient(to bottom, rgba(255, 253, 245, .85) 50%, rgba(255, 253, 245, 0)); }
 
   .artboard {
@@ -307,4 +329,5 @@ a { color: inherit; text-decoration: none; }
   .hero { position: relative; height: 100vh; }
   .problems { position: relative; min-height: 100vh; pointer-events: auto; }
   .card__thumb--slot { background: url("assets/cards/operations.jpg") center / cover; }
+  .statement .w { opacity: 1; filter: none; transform: none; transition: none; }
 }

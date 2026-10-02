@@ -12,6 +12,13 @@
   const targetBody = targetCard.querySelector('.card__body');
   const statement = problems.querySelector('.statement');
   const veil = document.getElementById('veil');
+  const ctas = hero.querySelector('.hero__ctas');
+
+  // Where the people sit in assets/hero.mp4 (1280x1060, wall extended upward),
+  // as fractions of the frame height
+  const VIDEO_ASPECT = 1280 / 1060;
+  const HEADS = 0.675;
+  const FEET = 0.93;
 
   // Wrap each word of the statement so it can be revealed on its own
   const words = [];
@@ -22,6 +29,7 @@
       const span = document.createElement('span');
       span.className = 'w';
       span.textContent = word;
+      span.style.setProperty('--i', words.length);
       frag.append(span);
       words.push(span);
     });
@@ -52,10 +60,8 @@
     video:   [0.04, 0.60], // full-bleed -> card thumbnail
     heroOut: [0.00, 0.26], // hero copy + top blur fade away
     sceneIn: [0.10, 0.46], // section two cards blur in
-    words:   [0.18, 0.88], // statement resolves word by word
     label:   [0.52, 0.64], // the landed card's label appears
   };
-  const WORD_SPAN = 0.14; // share of the words range each word takes to resolve
 
   let ticking = false;
 
@@ -90,16 +96,11 @@
     });
     problems.classList.toggle('is-live', s > 0.9);
 
-    // Statement: each word goes from a faint blur to crisp, in reading order
-    const u = range(p, ...T.words);
-    const n = words.length;
-    words.forEach((w, i) => {
-      const start = (i / Math.max(1, n - 1)) * (1 - WORD_SPAN);
-      const t = easeOut(clamp((u - start) / WORD_SPAN));
-      w.style.opacity = (lerp(0.12, 1, t) * s).toFixed(3);
-      w.style.filter = t < 1 ? `blur(${((1 - t) * 8).toFixed(2)}px)` : 'none';
-      w.style.transform = t < 1 ? `translate3d(0,${((1 - t) * 0.25).toFixed(3)}em,0)` : 'none';
-    });
+    // Statement: once section two is in view the words play their reveal
+    // (time-based CSS transition, not tied to scroll); resets back at the hero
+    statement.style.opacity = s;
+    if (s > 0.6) statement.classList.add('is-revealed');
+    else if (s < 0.05) statement.classList.remove('is-revealed');
 
     const l = easeOut(range(p, ...T.label));
     targetBody.style.opacity = l;
@@ -114,10 +115,32 @@
     media.style.width = `${lerp(vw, r.width, v)}px`;
     media.style.height = `${lerp(vh, r.height, v)}px`;
     media.style.borderRadius = `${lerp(0, 4, v)}px`;
-    // Hero framing matches Figma (1.19x, centred); the thumbnail is framed
-    // tighter on the couch like the Figma card image
-    media.style.setProperty('--zoom', lerp(1.19, 1.55, v).toFixed(4));
-    media.style.setProperty('--origin-y', `${lerp(50, 82, v).toFixed(2)}%`);
+
+    // Video framing inside that box.
+    // Hero: cover the viewport with the people's heads below the buttons and
+    // their feet just above the bottom edge, like the Figma frame.
+    const H0 = Math.max(vh, vw / VIDEO_ASPECT);
+    const W0 = H0 * VIDEO_ASPECT;
+    const ctaBottom = ctas.offsetTop + ctas.offsetHeight;
+    const wanted = Math.max(
+      vh - vh * 0.035 - FEET * H0,                  // feet ~3.5% above the bottom
+      ctaBottom + Math.max(32, vh * 0.05) - HEADS * H0 // heads clear of the buttons
+    );
+    // (may sit a few px below the top on phones; that strip is under the blur)
+    const T0 = clamp(wanted, vh - H0, vh - FEET * H0 - 8);
+    // Thumbnail: framed tight on the couch like the Figma card image.
+    // In between, interpolate relative to the box (footage height as a multiple
+    // of the box, and where the feet sit) so the people stay in frame.
+    const boxW = lerp(vw, r.width, v);
+    const boxH = lerp(vh, r.height, v);
+    const scale0 = H0 / vh, scale1 = 2.4;
+    const feet0 = (T0 + FEET * H0) / vh, feet1 = 0.94;
+    const vH = Math.max(boxH * lerp(scale0, scale1, v), boxW / VIDEO_ASPECT);
+    const vW = vH * VIDEO_ASPECT;
+    video.style.width = `${vW}px`;
+    video.style.height = `${vH}px`;
+    video.style.left = `${(boxW - vW) / 2}px`;
+    video.style.top = `${boxH * lerp(feet0, feet1, v) - FEET * vH}px`;
 
     nav.classList.toggle('is-solid', p > 0.2 || window.scrollY > stage.offsetTop + track);
   }
