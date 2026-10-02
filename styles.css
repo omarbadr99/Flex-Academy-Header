@@ -85,18 +85,19 @@ a { color: inherit; text-decoration: none; }
   overflow: hidden;
 }
 
-/* The travelling video. JS sets left/top/width/height every frame. */
+/* The travelling video. The box stays full-viewport; JS clips it down to the
+   card slot (clip-path) and moves the footage with transforms only, so the
+   scroll never triggers layout. */
 .media {
   position: absolute;
   z-index: 2;
-  left: 0; top: 0;
-  width: 100%; height: 100%;
+  inset: 0;
   overflow: hidden;
   background: #e3ddd2;
-  will-change: left, top, width, height;
 }
 .media video {
-  /* JS sizes and positions the footage; these are the no-JS defaults */
+  /* JS sizes the footage once per resize and then only transforms it;
+     these are the no-JS defaults */
   position: absolute;
   left: 0;
   top: 0;
@@ -106,31 +107,23 @@ a { color: inherit; text-decoration: none; }
   max-width: none;
   object-fit: cover;
   object-position: 50% 100%;
+  transform-origin: 0 0;
+  will-change: transform;
 }
 
-/* ---------- Progressive blur (Figma 344:257/344:258) ----------
-   Stacked backdrop blurs, each masked to a shorter band, so the blur is
-   strongest at the top and melts into the sharp footage. JS fades the
-   layers via --veil (opacity on the parent would cut off the backdrop). */
+/* ---------- Top wash (Figma 344:258) ----------
+   The progressive blur from Figma is baked into assets/hero.mp4 (stacked
+   gaussian blurs, strongest at the top) because live backdrop-filter over
+   playing video is too heavy to scroll smoothly. */
 .veil {
   position: absolute;
   z-index: 3;
   inset: 0 0 auto 0;
   height: 66%;
+  background: linear-gradient(to bottom, rgba(255, 253, 245, .8), rgba(255, 253, 245, 0));
   pointer-events: none;
+  will-change: opacity;
 }
-.veil i {
-  position: absolute;
-  inset: 0;
-  opacity: var(--veil, 1);
-}
-.veil i:nth-child(1) { backdrop-filter: blur(1px);  -webkit-backdrop-filter: blur(1px);  mask-image: linear-gradient(to bottom, #000 0%, #000 55%, transparent 100%); -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 55%, transparent 100%); }
-.veil i:nth-child(2) { backdrop-filter: blur(3px);  -webkit-backdrop-filter: blur(3px);  mask-image: linear-gradient(to bottom, #000 0%, #000 42%, transparent 82%);  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 42%, transparent 82%); }
-.veil i:nth-child(3) { backdrop-filter: blur(6px);  -webkit-backdrop-filter: blur(6px);  mask-image: linear-gradient(to bottom, #000 0%, #000 30%, transparent 66%);  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 30%, transparent 66%); }
-.veil i:nth-child(4) { backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); mask-image: linear-gradient(to bottom, #000 0%, #000 18%, transparent 50%);  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 18%, transparent 50%); }
-.veil i:nth-child(5) { backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); mask-image: linear-gradient(to bottom, #000 0%, transparent 34%);              -webkit-mask-image: linear-gradient(to bottom, #000 0%, transparent 34%); }
-/* Beige wash on top of the blur */
-.veil i:nth-child(6) { background: linear-gradient(to bottom, rgba(255, 253, 245, .8), rgba(255, 253, 245, 0)); }
 
 /* ---------- Hero copy (Figma 344:288) ---------- */
 .hero {
@@ -282,12 +275,11 @@ a { color: inherit; text-decoration: none; }
 @media (max-width: 760px) {
   .nav__links { display: none; }
   .nav .btn--solid { display: none; }
-  .veil { height: 80%; }
+  .veil { height: 80%; background: linear-gradient(to bottom, rgba(255, 253, 245, .85) 50%, rgba(255, 253, 245, 0)); }
   .hero { gap: 14px; }
   .hero__lede { font-size: 14px; }
   .hero__ctas { gap: 10px; }
   .hero__ctas .btn { padding: 9px 12px; font-size: 13px; }
-  .veil i:nth-child(6) { background: linear-gradient(to bottom, rgba(255, 253, 245, .85) 50%, rgba(255, 253, 245, 0)); }
 
   .artboard {
     position: absolute;
